@@ -125,6 +125,14 @@ download_bases <- function(ano, estado = "SP") {
 
 
 ### Função para fazer um pré processamento e filtrar as bases: `filtra_bases()`
+
+- Porque filtramos? São 594 tabelas originais, com um total de 1,42 GB.
+
+> "If your data is bigger than this, carefully consider if your big data problem might actually be a small data problem in disguise. While the complete data might be big, often the data needed to answer a specific question is small. You might be able to find a subset, subsample, or summary that fits in memory and still allows you to answer the question that you’re interested in. The challenge here is finding the right small data, which often requires a lot of iteration.
+
+*Garrett Grolemund & Hadley Wickham - [R4DS](https://r4ds.had.co.nz/introduction.html)*
+
+
 ```{r  eval=FALSE, include=TRUE}
 filtra_bases <- function(ano, estado = "SP") {
   if (!file.exists("data_processing")) {
@@ -264,6 +272,8 @@ Faça o download dessa base clicando [neste link](https://github.com/beatrizmilz
 ### Carrega o dataframe criado
 ```{r}
 base_filtrada <- readRDS("dados/base_filtrada.RDS")
+
+format(object.size(base_filtrada), units = "MB")
 ```
 
 ### Cria uma nova coluna com o CID 10, e usando o `left_join()` cria uma coluna com a descrição do CID 10

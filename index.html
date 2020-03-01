@@ -2712,6 +2712,13 @@ code span.ot { color: #007020; }
 </div>
 <div id="função-para-fazer-um-pré-processamento-e-filtrar-as-bases-filtra_bases" class="section level3">
 <h3>Função para fazer um pré processamento e filtrar as bases: <code>filtra_bases()</code></h3>
+<ul>
+<li>Porque filtramos? São 594 tabelas originais, com um total de 1,42 GB.</li>
+</ul>
+<blockquote>
+<p>&quot;If your data is bigger than this, carefully consider if your big data problem might actually be a small data problem in disguise. While the complete data might be big, often the data needed to answer a specific question is small. You might be able to find a subset, subsample, or summary that fits in memory and still allows you to answer the question that you’re interested in. The challenge here is finding the right small data, which often requires a lot of iteration.</p>
+</blockquote>
+<p><em>Garrett Grolemund &amp; Hadley Wickham - <a href="https://r4ds.had.co.nz/introduction.html">R4DS</a></em></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">filtra_bases &lt;-<span class="st"> </span><span class="cf">function</span>(ano, <span class="dt">estado =</span> <span class="st">&quot;SP&quot;</span>) {</a>
 <a class="sourceLine" id="cb4-2" title="2">  <span class="cf">if</span> (<span class="op">!</span><span class="kw">file.exists</span>(<span class="st">&quot;data_processing&quot;</span>)) {</a>
 <a class="sourceLine" id="cb4-3" title="3">    <span class="kw">dir.create</span>(<span class="st">&quot;data_processing&quot;</span>, <span class="dt">showWarnings =</span> <span class="ot">FALSE</span>)</a>
@@ -2836,23 +2843,26 @@ code span.ot { color: #007020; }
 </div>
 <div id="carrega-o-dataframe-criado" class="section level3">
 <h3>Carrega o dataframe criado</h3>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">base_filtrada &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;dados/base_filtrada.RDS&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">base_filtrada &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;dados/base_filtrada.RDS&quot;</span>)</a>
+<a class="sourceLine" id="cb9-2" title="2"></a>
+<a class="sourceLine" id="cb9-3" title="3"><span class="kw">format</span>(<span class="kw">object.size</span>(base_filtrada), <span class="dt">units =</span> <span class="st">&quot;MB&quot;</span>)</a></code></pre></div>
+<pre><code>## [1] &quot;5.1 Mb&quot;</code></pre>
 </div>
 <div id="cria-uma-nova-coluna-com-o-cid-10-e-usando-o-left_join-cria-uma-coluna-com-a-descrição-do-cid-10" class="section level3">
 <h3>Cria uma nova coluna com o CID 10, e usando o <code>left_join()</code> cria uma coluna com a descrição do CID 10</h3>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">base_filtrada_cid10 &lt;-<span class="st"> </span>base_filtrada <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb10-2" title="2"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">cid10 =</span> stringr<span class="op">::</span><span class="kw">str_extract</span>(causabas, <span class="st">&quot;^.{0,3}&quot;</span>))  <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb10-3" title="3"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">left_join</span>(<span class="dt">y =</span> cid10_desc)</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">base_filtrada_cid10 &lt;-<span class="st"> </span>base_filtrada <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb11-2" title="2"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">cid10 =</span> stringr<span class="op">::</span><span class="kw">str_extract</span>(causabas, <span class="st">&quot;^.{0,3}&quot;</span>))  <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb11-3" title="3"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">left_join</span>(<span class="dt">y =</span> cid10_desc)</a></code></pre></div>
 </div>
 <div id="exemplo-dos-cid-10-encontrados" class="section level3">
 <h3>Exemplo dos CID 10 encontrados</h3>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">base_filtrada_cid10 <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb11-2" title="2"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">group_by</span>(cid10, cid10_name) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb11-3" title="3"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">summarise</span>(<span class="dt">n =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb11-4" title="4"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">arrange</span>(<span class="kw">desc</span>(n)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb11-5" title="5"><span class="st">  </span>DT<span class="op">::</span><span class="kw">datatable</span>()</a></code></pre></div>
-<div id="htmlwidget-34e14bb2063c02b85ed3" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-34e14bb2063c02b85ed3">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10"],["X33","X36","X37","X31","X30","X39","X38","X34","X32","X35"],["Vítima de raio","Vítima de avalanche, desabamento de terra e outros movimentos da superfície terrestre","Vítima de tempestade cataclísmica","Exposição a frio natural excessivo","Exposição a calor natural excessivo","Exposição a outras forças da natureza e às não especificadas","Vítima de inundação","Vítima de terremoto","Exposição à luz solar","Vítima de erupção vulcânica"],[2314,1423,1157,193,79,58,40,31,23,2]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>cid10<\/th>\n      <th>cid10_name<\/th>\n      <th>n<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":3},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">base_filtrada_cid10 <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb12-2" title="2"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">group_by</span>(cid10, cid10_name) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb12-3" title="3"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">summarise</span>(<span class="dt">n =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb12-4" title="4"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">arrange</span>(<span class="kw">desc</span>(n)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb12-5" title="5"><span class="st">  </span>DT<span class="op">::</span><span class="kw">datatable</span>()</a></code></pre></div>
+<div id="htmlwidget-c5f78869b100f9bccb5e" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-c5f78869b100f9bccb5e">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10"],["X33","X36","X37","X31","X30","X39","X38","X34","X32","X35"],["Vítima de raio","Vítima de avalanche, desabamento de terra e outros movimentos da superfície terrestre","Vítima de tempestade cataclísmica","Exposição a frio natural excessivo","Exposição a calor natural excessivo","Exposição a outras forças da natureza e às não especificadas","Vítima de inundação","Vítima de terremoto","Exposição à luz solar","Vítima de erupção vulcânica"],[2314,1423,1157,193,79,58,40,31,23,2]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>cid10<\/th>\n      <th>cid10_name<\/th>\n      <th>n<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":3},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div id="para-o-meetup" class="section level2">
