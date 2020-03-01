@@ -1,6 +1,7 @@
 ---
 title: "Obtendo os dados de mortalidade no DataSUS"
 author: "Beatriz Milz e Jean Prado"
+date: "Março - 2020 <p><center> <a class='github-button' href='https://github.com/beatrizmilz/R-Ladies-SP-DataSUS' data-color-scheme='no-preference: light; light: light; dark: dark;' data-size='large' data-show-count='true' aria-label='Star beatrizmilz/R-Ladies-SP-DataSUS on GitHub'>Acesse este repositório</a>  </center></p>"
 output:
   prettydoc::html_pretty:
     theme: leonids
@@ -10,6 +11,9 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
+
+<!-- Place this tag in your head or just before your close body tag. -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
 
 ## Informações importantes 
 
@@ -298,7 +302,7 @@ base_filtrada_cid10 %>%
 ### Downloads:
 
   - Base do CID 10 - clicando [neste link](https://github.com/cleytonferrari/CidDataSus/raw/master/CIDImport/Repositorio/Resources/CID-10-CATEGORIAS.CSV) com o botão direito, e clicando em "salvar link como".
-   - Base unificada e filtrada,  clicando [neste link](https://github.com/beatrizmilz/R-Ladies-SP-DataSUS/raw/master/dados/base_filtrada.RDS).  
+   - Base unificada e filtrada do DataSUS,  clicando [neste link](https://github.com/beatrizmilz/R-Ladies-SP-DataSUS/raw/master/dados/base_filtrada.RDS).  
 
 
 ### Colunas importantes:
