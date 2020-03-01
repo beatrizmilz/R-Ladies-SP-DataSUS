@@ -40,18 +40,18 @@ library(janitor)
   - X39 - Exposição a Outras Forças da Natureza e às Não Especificadas
   
 ```{r}
-cid10_x3 <- tibble::tibble(causabas2 = character(), desc = character()) %>%
+cid10_x3 <- tibble::tibble(cid10 = character(), cid10_name = character()) %>%
   
-  tibble::add_row(causabas2 = "X30", desc = "Exposição a Calor Natural Excessivo") %>%
-  tibble::add_row(causabas2 = "X31", desc = "Exposição a Frio Natural Excessivo")  %>% 
-  tibble::add_row(causabas2 = "X32", desc = "Exposição à Luz Solar") %>%
-  tibble::add_row(causabas2 = "X33", desc = "Vítima de Raio") %>% 
-  tibble::add_row(causabas2 = "X34", desc = "Vítima de Terremoto") %>% 
-  tibble::add_row(causabas2 = "X35", desc = "Vítima de Erupção Vulcânica") %>% 
-  tibble::add_row(causabas2 = "X36", desc = "Vítima de Avalanche, Desabamento de Terra e Outros Movimentos da Superfície Terrestre") %>% 
-  tibble::add_row(causabas2 = "X37", desc = "Vítima de Tempestade Cataclísmica") %>%
-  tibble::add_row(causabas2 = "X38", desc = "Vítima de Inundação") %>%
-  tibble::add_row(causabas2 = "X39", desc = "Exposição a Outras Forças da Natureza e às Não Especificadas")
+  tibble::add_row(cid10 = "X30", cid10_name = "Exposição a Calor Natural Excessivo") %>%
+  tibble::add_row(cid10 = "X31", cid10_name = "Exposição a Frio Natural Excessivo")  %>% 
+  tibble::add_row(cid10 = "X32", cid10_name = "Exposição à Luz Solar") %>%
+  tibble::add_row(cid10 = "X33", cid10_name = "Vítima de Raio") %>% 
+  tibble::add_row(cid10 = "X34", cid10_name = "Vítima de Terremoto") %>% 
+  tibble::add_row(cid10 = "X35", cid10_name = "Vítima de Erupção Vulcânica") %>% 
+  tibble::add_row(cid10 = "X36", cid10_name = "Vítima de Avalanche, Desabamento de Terra e Outros Movimentos da Superfície Terrestre") %>% 
+  tibble::add_row(cid10 = "X37", cid10_name = "Vítima de Tempestade Cataclísmica") %>%
+  tibble::add_row(cid10 = "X38", cid10_name = "Vítima de Inundação") %>%
+  tibble::add_row(cid10 = "X39", cid10_name = "Exposição a Outras Forças da Natureza e às Não Especificadas")
 
 
 ```
@@ -226,7 +226,7 @@ dados <- readRDS("dados/base_filtrada.RDS")
 
 ```{r}
 dados2 <- dados %>%
-  mutate(causabas2 = str_extract(causabas, "^.{0,3}"))  %>% 
+  mutate(cid10 = str_extract(causabas, "^.{0,3}"))  %>% 
   left_join(y = cid10_x3)
 ```
 
@@ -234,11 +234,11 @@ dados2 <- dados %>%
 ```{r}
  dados2 %>%
   
-  group_by(sexo, causabas2, desc) %>%
+  group_by(sexo, cid10, cid10_name) %>%
   
   summarise(n = n()) %>%
   
-  arrange(causabas2) %>% 
+  arrange(cid10) %>% 
   
   DT::datatable()
 ```
