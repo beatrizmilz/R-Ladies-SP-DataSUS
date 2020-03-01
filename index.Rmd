@@ -62,6 +62,12 @@ cid10_x3 <- tibble::tibble(cid10 = character(), cid10_name = character()) %>%
 
 ```{r eval=FALSE, include=TRUE}
 download_bases <- function(ano, estado = "SP") {
+
+  if (!file.exists("download_raw")) {
+    dir.create("download_raw", showWarnings = FALSE)
+    paste0("Diretório criado: download_raw")
+  }
+  
   
   
     if (!file.exists(paste0("download_raw/", estado, "/"))) {
@@ -109,12 +115,21 @@ download_bases <- function(ano, estado = "SP") {
 
 ```{r  eval=FALSE, include=TRUE}
 filtra_bases <- function(ano, estado = "SP") {
+  
+  if (!file.exists("data_processing")) {
+    dir.create("data_processing", showWarnings = FALSE)
+    paste0("Diretório criado: data_processing")
+  }
+  
+  
   if (!file.exists(paste0("data_processing/", estado, "/"))) {
     dir.create(paste0("data_processing/", estado, "/"), showWarnings = FALSE)
     paste0("Diretório criado: data_processing/", estado, "/")
   } else {
     paste0("Diretório já existe: data_processing/", estado, "/")
   }
+  
+  
   
   if (!file.exists(paste0("data_processing/", estado, "/DO", estado, ano, "_filtrado.RDS"))) {
     
@@ -185,10 +200,10 @@ estados <- c(
 
 ```{r eval=FALSE, include=TRUE}
 
+
 for (i in 1:27) {
- #purrr::possibly(
-   purrr::walk2(anos, estados[i], .f = download_bases)
-   #)
+  purrr::walk2(anos, estados[i], .f = download_bases)
+  
 }
 
 
@@ -197,9 +212,8 @@ for (i in 1:27) {
 ```{r  eval=FALSE, include=TRUE}
 
 for (i in 1:27) {
- #purrr::possibly(
-   purrr::walk2(anos, estados[i], .f = filtra_bases)
-   #)
+  purrr::walk2(anos, estados[i], .f = filtra_bases)
+  
 }
 
 
@@ -219,27 +233,30 @@ saveRDS(dados, file = "dados/base_filtrada.RDS")
 ```
 
 ```{r}
-dados <- readRDS("dados/base_filtrada.RDS")
-# str(dados)
+base_filtrada <- readRDS("dados/base_filtrada.RDS")
+
 ```
 
 
 ```{r}
-dados2 <- dados %>%
+base_filtrada_cid10 <- base_filtrada %>%
   mutate(cid10 = str_extract(causabas, "^.{0,3}"))  %>% 
   left_join(y = cid10_x3)
 ```
 
 
 ```{r}
- dados2 %>%
+ base_filtrada_cid10 %>%
   
-  group_by(sexo, cid10, cid10_name) %>%
+  group_by(cid10, cid10_name) %>%
   
   summarise(n = n()) %>%
   
-  arrange(cid10) %>% 
+  arrange(desc(n)) %>% 
   
   DT::datatable()
 ```
 
+Ideias para perguntas:
+
+- `base %>% filter(is.na(natural), is.na(mun_res_uf))` 
