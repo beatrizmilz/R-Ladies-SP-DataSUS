@@ -11,6 +11,14 @@ output:
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
+```{r }
+# devtools::install_github("rfsaldanha/microdatasus")
+
+library(microdatasus)
+library(tidyverse)
+library(janitor)
+```
+
 - Links úteis: 
 
 - [Artigo: 'Microdatasus: pacote para download e pré-processamento de microdados do Departamento de Informática do SUS (DATASUS)'](http://www.scielo.br/scielo.php?script=sci_arttext&pid=S0102-311X2019001104001&tlng=pt)
@@ -30,15 +38,26 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
   - X37 - Vítima de Tempestade Cataclísmica
   - X38 - Vítima de Inundação
   - X39 - Exposição a Outras Forças da Natureza e às Não Especificadas
+  
+```{r}
+cid10_x3 <- tibble::tibble(causabas2 = character(), desc = character()) %>%
+  
+  tibble::add_row(causabas2 = "X30", desc = "Exposição a Calor Natural Excessivo") %>%
+  tibble::add_row(causabas2 = "X31", desc = "Exposição a Frio Natural Excessivo")  %>% 
+  tibble::add_row(causabas2 = "X32", desc = "Exposição à Luz Solar") %>%
+  tibble::add_row(causabas2 = "X33", desc = "Vítima de Raio") %>% 
+  tibble::add_row(causabas2 = "X34", desc = "Vítima de Terremoto") %>% 
+  tibble::add_row(causabas2 = "X35", desc = "Vítima de Erupção Vulcânica") %>% 
+  tibble::add_row(causabas2 = "X36", desc = "Vítima de Avalanche, Desabamento de Terra e Outros Movimentos da Superfície Terrestre") %>% 
+  tibble::add_row(causabas2 = "X37", desc = "Vítima de Tempestade Cataclísmica") %>%
+  tibble::add_row(causabas2 = "X38", desc = "Vítima de Inundação") %>%
+  tibble::add_row(causabas2 = "X39", desc = "Exposição a Outras Forças da Natureza e às Não Especificadas")
 
 
-```{r }
-# devtools::install_github("rfsaldanha/microdatasus")
-
-library(microdatasus)
-library(tidyverse)
-library(janitor)
 ```
+
+
+
 
 
 ```{r eval=FALSE, include=TRUE}
@@ -201,20 +220,26 @@ saveRDS(dados, file = "dados/base_filtrada.RDS")
 
 ```{r}
 dados <- readRDS("dados/base_filtrada.RDS")
-str(dados)
+# str(dados)
 ```
 
 
 ```{r}
-dados2 <- dados %>%  mutate(causabas2 = str_extract(causabas, "^.{0,3}")) 
+dados2 <- dados %>%
+  mutate(causabas2 = str_extract(causabas, "^.{0,3}"))  %>% 
+  left_join(y = cid10_x3)
 ```
 
+
 ```{r}
-dados2 %>%
+ dados2 %>%
   
-  group_by(sexo, causabas2) %>%
+  group_by(sexo, causabas2, desc) %>%
+  
   summarise(n = n()) %>%
+  
   arrange(causabas2) %>% 
+  
   DT::datatable()
-
 ```
+
