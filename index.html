@@ -2692,26 +2692,23 @@ code span.ot { color: #007020; }
 <a class="sourceLine" id="cb3-25" title="25">    </a>
 <a class="sourceLine" id="cb3-26" title="26">    <span class="kw">print</span>(<span class="kw">paste0</span>(</a>
 <a class="sourceLine" id="cb3-27" title="27">      <span class="st">&quot;Iniciando o download do arquivo do ano &quot;</span>,</a>
-<a class="sourceLine" id="cb3-28" title="28">      ano,</a>
-<a class="sourceLine" id="cb3-29" title="29">      <span class="st">&quot;, estado &quot;</span>,</a>
-<a class="sourceLine" id="cb3-30" title="30">      estado,</a>
-<a class="sourceLine" id="cb3-31" title="31">      <span class="st">&quot; ...&quot;</span></a>
-<a class="sourceLine" id="cb3-32" title="32">    ))</a>
-<a class="sourceLine" id="cb3-33" title="33">    </a>
-<a class="sourceLine" id="cb3-34" title="34">    <span class="kw">download.file</span>(</a>
-<a class="sourceLine" id="cb3-35" title="35">      url,</a>
-<a class="sourceLine" id="cb3-36" title="36">      <span class="dt">destfile =</span> <span class="kw">paste0</span>(<span class="st">&quot;download_raw/&quot;</span>, estado, <span class="st">&quot;/DO&quot;</span>, estado, ano , <span class="st">&quot;.dbc&quot;</span>),</a>
-<a class="sourceLine" id="cb3-37" title="37">      <span class="dt">method =</span> <span class="st">&quot;curl&quot;</span></a>
-<a class="sourceLine" id="cb3-38" title="38">    )</a>
-<a class="sourceLine" id="cb3-39" title="39">    </a>
-<a class="sourceLine" id="cb3-40" title="40">    <span class="kw">print</span>(<span class="st">&quot;Download completo!&quot;</span>)</a>
-<a class="sourceLine" id="cb3-41" title="41">    beepr<span class="op">::</span><span class="kw">beep</span>(<span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb3-42" title="42">  } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb3-43" title="43">    <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Download realizado anteriormente: &quot;</span>, estado, <span class="st">&quot; &quot;</span>, ano, <span class="st">&quot; ...&quot;</span>))</a>
-<a class="sourceLine" id="cb3-44" title="44">  }</a>
-<a class="sourceLine" id="cb3-45" title="45">  </a>
-<a class="sourceLine" id="cb3-46" title="46">  </a>
-<a class="sourceLine" id="cb3-47" title="47">}</a></code></pre></div>
+<a class="sourceLine" id="cb3-28" title="28">      estado, <span class="st">&quot; &quot;</span>, ano, <span class="st">&quot;...&quot;</span></a>
+<a class="sourceLine" id="cb3-29" title="29">    ))</a>
+<a class="sourceLine" id="cb3-30" title="30">    </a>
+<a class="sourceLine" id="cb3-31" title="31">    <span class="kw">download.file</span>(</a>
+<a class="sourceLine" id="cb3-32" title="32">      url,</a>
+<a class="sourceLine" id="cb3-33" title="33">      <span class="dt">destfile =</span> <span class="kw">paste0</span>(<span class="st">&quot;download_raw/&quot;</span>, estado, <span class="st">&quot;/DO&quot;</span>, estado, ano , <span class="st">&quot;.dbc&quot;</span>),</a>
+<a class="sourceLine" id="cb3-34" title="34">      <span class="dt">method =</span> <span class="st">&quot;curl&quot;</span></a>
+<a class="sourceLine" id="cb3-35" title="35">    )</a>
+<a class="sourceLine" id="cb3-36" title="36">    </a>
+<a class="sourceLine" id="cb3-37" title="37">    <span class="kw">print</span>(<span class="st">&quot;Download completo!&quot;</span>)</a>
+<a class="sourceLine" id="cb3-38" title="38">    beepr<span class="op">::</span><span class="kw">beep</span>(<span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb3-39" title="39">  } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb3-40" title="40">    <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Download realizado anteriormente: &quot;</span>, estado, <span class="st">&quot; &quot;</span>, ano, <span class="st">&quot; ...&quot;</span>))</a>
+<a class="sourceLine" id="cb3-41" title="41">  }</a>
+<a class="sourceLine" id="cb3-42" title="42">  </a>
+<a class="sourceLine" id="cb3-43" title="43">  </a>
+<a class="sourceLine" id="cb3-44" title="44">}</a></code></pre></div>
 </div>
 <div id="função-para-fazer-um-pré-processamento-e-filtrar-as-bases-filtra_bases" class="section level3">
 <h3>Função para fazer um pré processamento e filtrar as bases: <code>filtra_bases()</code></h3>
@@ -2739,7 +2736,7 @@ code span.ot { color: #007020; }
 <a class="sourceLine" id="cb4-22" title="22">    ano,</a>
 <a class="sourceLine" id="cb4-23" title="23">    <span class="st">&quot;_filtrado.RDS&quot;</span></a>
 <a class="sourceLine" id="cb4-24" title="24">  ))) {</a>
-<a class="sourceLine" id="cb4-25" title="25">    <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Abrindo a base: &quot;</span>, ano, <span class="st">&quot; &quot;</span>, estado, <span class="st">&quot;...&quot;</span>))</a>
+<a class="sourceLine" id="cb4-25" title="25">    <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Abrindo a base: &quot;</span>,  estado, <span class="st">&quot; &quot;</span>, ano, <span class="st">&quot;...&quot;</span>))</a>
 <a class="sourceLine" id="cb4-26" title="26">    </a>
 <a class="sourceLine" id="cb4-27" title="27">    base_raw &lt;-</a>
 <a class="sourceLine" id="cb4-28" title="28"><span class="st">      </span>read.dbc<span class="op">::</span><span class="kw">read.dbc</span>(<span class="kw">paste0</span>(<span class="st">&quot;download_raw/&quot;</span>, estado, <span class="st">&quot;/DO&quot;</span>, estado, ano, <span class="st">&quot;.dbc&quot;</span>))</a>
@@ -2854,8 +2851,8 @@ code span.ot { color: #007020; }
 <a class="sourceLine" id="cb11-3" title="3"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">summarise</span>(<span class="dt">n =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb11-4" title="4"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">arrange</span>(<span class="kw">desc</span>(n)) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb11-5" title="5"><span class="st">  </span>DT<span class="op">::</span><span class="kw">datatable</span>()</a></code></pre></div>
-<div id="htmlwidget-21975653ab8fd0d3cdf5" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-21975653ab8fd0d3cdf5">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10"],["X33","X36","X37","X31","X30","X39","X38","X34","X32","X35"],["Vítima de raio","Vítima de avalanche, desabamento de terra e outros movimentos da superfície terrestre","Vítima de tempestade cataclísmica","Exposição a frio natural excessivo","Exposição a calor natural excessivo","Exposição a outras forças da natureza e às não especificadas","Vítima de inundação","Vítima de terremoto","Exposição à luz solar","Vítima de erupção vulcânica"],[2314,1423,1157,193,79,58,40,31,23,2]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>cid10<\/th>\n      <th>cid10_name<\/th>\n      <th>n<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":3},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-34e14bb2063c02b85ed3" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-34e14bb2063c02b85ed3">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10"],["X33","X36","X37","X31","X30","X39","X38","X34","X32","X35"],["Vítima de raio","Vítima de avalanche, desabamento de terra e outros movimentos da superfície terrestre","Vítima de tempestade cataclísmica","Exposição a frio natural excessivo","Exposição a calor natural excessivo","Exposição a outras forças da natureza e às não especificadas","Vítima de inundação","Vítima de terremoto","Exposição à luz solar","Vítima de erupção vulcânica"],[2314,1423,1157,193,79,58,40,31,23,2]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>cid10<\/th>\n      <th>cid10_name<\/th>\n      <th>n<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":3},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div id="para-o-meetup" class="section level2">

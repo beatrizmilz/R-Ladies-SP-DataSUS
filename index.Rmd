@@ -102,10 +102,7 @@ download_bases <- function(ano, estado = "SP") {
     
     print(paste0(
       "Iniciando o download do arquivo do ano ",
-      ano,
-      ", estado ",
-      estado,
-      " ..."
+      estado, " ", ano, "..."
     ))
     
     download.file(
@@ -153,7 +150,7 @@ filtra_bases <- function(ano, estado = "SP") {
     ano,
     "_filtrado.RDS"
   ))) {
-    print(paste0("Abrindo a base: ", ano, " ", estado, "..."))
+    print(paste0("Abrindo a base: ",  estado, " ", ano, "..."))
     
     base_raw <-
       read.dbc::read.dbc(paste0("download_raw/", estado, "/DO", estado, ano, ".dbc"))
