@@ -237,8 +237,6 @@ base_filtrada <- readRDS("dados/base_filtrada.RDS")
 ```{r}
 base_filtrada_cid10 <- base_filtrada %>%
   mutate(cid10 = str_extract(causabas, "^.{0,3}"))  %>% 
-  #left_join(y = cid10_x3)
-  
   left_join(y = cid10_desc)
 ```
 
