@@ -1,0 +1,220 @@
+---
+title: "Obtendo os dados de mortalidade no DataSUS"
+author: "Beatriz Milz e Jean Prado"
+output:
+  prettydoc::html_pretty:
+    theme: leonids
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+- Links úteis: 
+
+- [Artigo: 'Microdatasus: pacote para download e pré-processamento de microdados do Departamento de Informática do SUS (DATASUS)'](http://www.scielo.br/scielo.php?script=sci_arttext&pid=S0102-311X2019001104001&tlng=pt)
+
+
+- [Informações sobre essa base de dados](https://github.com/rfsaldanha/microdatasus/wiki/Conven%C3%A7%C3%B5es-SIM)
+
+- CID 10: http://www.medicinanet.com.br/cid10/x.htm
+ 
+  - X30 - Exposição a Calor Natural Excessivo
+  - X31 - Exposição a Frio Natural Excessivo
+  - X32 - Exposição à Luz Solar
+  - X33 - Vítima de Raio
+  - X34 - Vítima de Terremoto
+  - X35 - Vítima de Erupção Vulcânica
+  - X36 - Vítima de Avalanche, Desabamento de Terra e Outros Movimentos da Superfície -Terrestre
+  - X37 - Vítima de Tempestade Cataclísmica
+  - X38 - Vítima de Inundação
+  - X39 - Exposição a Outras Forças da Natureza e às Não Especificadas
+
+
+```{r }
+# devtools::install_github("rfsaldanha/microdatasus")
+
+library(microdatasus)
+library(tidyverse)
+library(janitor)
+```
+
+
+```{r eval=FALSE, include=TRUE}
+download_bases <- function(ano, estado = "SP") {
+  
+  
+    if (!file.exists(paste0("download_raw/", estado, "/"))) {
+    dir.create(paste0("download_raw/", estado, "/"), showWarnings = FALSE)
+    paste0("Diretório criado: download_raw/", estado, "/")
+  } else {
+    paste0("Diretório já existe: download_raw/", estado, "/")
+  }
+  
+  
+  if (!file.exists(paste0("download_raw/", estado, "/DO", estado, ano , ".dbc"))) {
+    url <-
+      paste0(
+        "ftp://ftp.datasus.gov.br/dissemin/publicos/SIM/CID10/DORES/DO",
+        estado,
+        ano,
+        ".dbc"
+      )
+    
+    print(paste0(
+      "Iniciando o download do arquivo do ano ",
+      ano,
+      ", estado ",
+      estado,
+      " ..."
+    ))
+    
+    download.file(
+      url,
+      destfile = paste0("download_raw/", estado, "/DO", estado, ano , ".dbc"),
+      method = "curl"
+    )
+    
+    print("Download completo!")
+    beepr::beep(2)
+  } else {
+    print(paste0("Download realizado anteriormente: ", estado, " ", ano, " ..."))
+  }
+  
+  
+}
+
+
+```
+
+```{r  eval=FALSE, include=TRUE}
+filtra_bases <- function(ano, estado = "SP") {
+  if (!file.exists(paste0("data_processing/", estado, "/"))) {
+    dir.create(paste0("data_processing/", estado, "/"), showWarnings = FALSE)
+    paste0("Diretório criado: data_processing/", estado, "/")
+  } else {
+    paste0("Diretório já existe: data_processing/", estado, "/")
+  }
+  
+  if (!file.exists(paste0("data_processing/", estado, "/DO", estado, ano, "_filtrado.RDS"))) {
+    
+    print(paste0("Abrindo a base: ", ano, " ", estado, "..."))
+    
+    base_raw <-
+      read.dbc::read.dbc(paste0("download_raw/", estado, "/DO", estado, ano, ".dbc"))
+    
+    print(paste0("Base aberta: ", estado, " ",  ano, "..."))
+    
+    base_filtrada <- base_raw %>%
+      microdatasus::process_sim() %>%
+      janitor::clean_names() %>%
+      filter(str_detect(causabas, "X3"))
+    
+    print(paste0("Base filtrada: ", estado, " ", ano, "..."))
+    
+    saveRDS(base_filtrada,
+            file = paste0("data_processing/", estado, "/DO", estado , ano, "_filtrado.RDS"))
+    
+    print(paste0("Base exportada: ", estado, " ", ano, "..."))
+    
+    
+    
+  } else {
+    print(paste0("Base filtrada anteriormente: ", estado, " ", ano, " ..."))
+  }
+  
+  
+  
+}
+```
+
+```{r}
+anos <- 1996:2017
+
+estados <- c(
+   "AC",
+  "AL",
+  "AP",
+  "AM",
+  "BA",
+  "CE",
+  "DF",
+  "ES",
+  "GO",
+  "MA",
+  "MT",
+  "MS",
+  "MG",
+  "PA",
+  "PB",
+  "PR",
+  "PE",
+  "PI",
+  "RJ",
+  "RN",
+  "RS",
+  "RO",
+  "RR",
+  "SC",
+  "SP",
+  "SE",
+  "TO"
+)
+
+```
+
+```{r eval=FALSE, include=TRUE}
+
+for (i in 1:27) {
+ #purrr::possibly(
+   purrr::walk2(anos, estados[i], .f = download_bases)
+   #)
+}
+
+
+```
+
+```{r  eval=FALSE, include=TRUE}
+
+for (i in 1:27) {
+ #purrr::possibly(
+   purrr::walk2(anos, estados[i], .f = filtra_bases)
+   #)
+}
+
+
+```
+
+
+```{r  eval=FALSE, include=TRUE, message=FALSE, warning=FALSE}
+dados <-
+  list.files(
+    path = "data_processing/",
+    pattern = ".RDS",
+    recursive = TRUE,
+    full.names = TRUE
+  ) %>% map_dfr(readRDS)
+
+saveRDS(dados, file = "dados/base_filtrada.RDS")
+```
+
+```{r}
+dados <- readRDS("dados/base_filtrada.RDS")
+str(dados)
+```
+
+
+```{r}
+dados2 <- dados %>%  mutate(causabas2 = str_extract(causabas, "^.{0,3}")) 
+```
+
+```{r}
+dados2 %>%
+  
+  group_by(sexo, causabas2) %>%
+  summarise(n = n()) %>%
+  arrange(causabas2) %>% 
+  DT::datatable()
+
+```
