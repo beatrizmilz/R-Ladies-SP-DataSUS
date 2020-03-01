@@ -39,25 +39,21 @@ library(janitor)
   - X38 - Vítima de Inundação
   - X39 - Exposição a Outras Forças da Natureza e às Não Especificadas
   
-```{r}
-cid10_x3 <- tibble::tibble(cid10 = character(), cid10_name = character()) %>%
-  
-  tibble::add_row(cid10 = "X30", cid10_name = "Exposição a Calor Natural Excessivo") %>%
-  tibble::add_row(cid10 = "X31", cid10_name = "Exposição a Frio Natural Excessivo")  %>% 
-  tibble::add_row(cid10 = "X32", cid10_name = "Exposição à Luz Solar") %>%
-  tibble::add_row(cid10 = "X33", cid10_name = "Vítima de Raio") %>% 
-  tibble::add_row(cid10 = "X34", cid10_name = "Vítima de Terremoto") %>% 
-  tibble::add_row(cid10 = "X35", cid10_name = "Vítima de Erupção Vulcânica") %>% 
-  tibble::add_row(cid10 = "X36", cid10_name = "Vítima de Avalanche, Desabamento de Terra e Outros Movimentos da Superfície Terrestre") %>% 
-  tibble::add_row(cid10 = "X37", cid10_name = "Vítima de Tempestade Cataclísmica") %>%
-  tibble::add_row(cid10 = "X38", cid10_name = "Vítima de Inundação") %>%
-  tibble::add_row(cid10 = "X39", cid10_name = "Exposição a Outras Forças da Natureza e às Não Especificadas")
 
+
+Base dos códigos CID 10 obtidas [neste repositório](https://github.com/cleytonferrari/CidDataSus/blob/master/CIDImport/Repositorio/Resources/CID-10-CATEGORIAS.CSV):
+
+```{r}
+
+library(readr)
+cid10_desc <-
+  read_csv2(
+    'https://raw.githubusercontent.com/cleytonferrari/CidDataSus/master/CIDImport/Repositorio/Resources/CID-10-CATEGORIAS.CSV',
+    locale = locale(encoding = "ISO-8859-1"),
+    col_names = c("cid10", NA, "cid10_name")
+  ) %>% select(-X2)
 
 ```
-
-
-
 
 
 ```{r eval=FALSE, include=TRUE}
@@ -241,7 +237,9 @@ base_filtrada <- readRDS("dados/base_filtrada.RDS")
 ```{r}
 base_filtrada_cid10 <- base_filtrada %>%
   mutate(cid10 = str_extract(causabas, "^.{0,3}"))  %>% 
-  left_join(y = cid10_x3)
+  #left_join(y = cid10_x3)
+  
+  left_join(y = cid10_desc)
 ```
 
 
