@@ -2609,16 +2609,13 @@ code span.ot { color: #007020; }
 
 <div id="post">
 <article class="post-content">
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="co"># devtools::install_github(&quot;rfsaldanha/microdatasus&quot;)</span></a>
-<a class="sourceLine" id="cb1-2" title="2"></a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="kw">library</span>(microdatasus)</a>
-<a class="sourceLine" id="cb1-4" title="4"><span class="kw">library</span>(tidyverse)</a>
-<a class="sourceLine" id="cb1-5" title="5"><span class="kw">library</span>(janitor)</a></code></pre></div>
+<div id="informações-importantes" class="section level2">
+<h2>Informações importantes</h2>
 <ul>
-<li><p>Links úteis:</p></li>
-<li><p><a href="http://www.scielo.br/scielo.php?script=sci_arttext&amp;pid=S0102-311X2019001104001&amp;tlng=pt">Artigo: ‘Microdatasus: pacote para download e pré-processamento de microdados do Departamento de Informática do SUS (DATASUS)’</a></p></li>
-<li><p><a href="https://github.com/rfsaldanha/microdatasus/wiki/Conven%C3%A7%C3%B5es-SIM">Informações sobre essa base de dados</a></p></li>
-<li><p>CID 10: <a href="http://www.medicinanet.com.br/cid10/x.htm" class="uri">http://www.medicinanet.com.br/cid10/x.htm</a></p>
+<li><p>Artigo: <a href="http://www.scielo.br/scielo.php?script=sci_arttext&amp;pid=S0102-311X2019001104001&amp;tlng=pt">‘Microdatasus: pacote para download e pré-processamento de microdados do Departamento de Informática do SUS (DATASUS)’</a></p></li>
+<li><p>Informações sobre essa <a href="https://github.com/rfsaldanha/microdatasus/wiki/Conven%C3%A7%C3%B5es-SIM">base de dados</a></p></li>
+<li><p>Descrição sobre o <a href="http://www.medicinanet.com.br/cid10/x.htm">CID 10</a></p></li>
+<li><p>Códigos CID 10 que tem relação com condições climáticas:</p>
 <ul>
 <li>X30 - Exposição a Calor Natural Excessivo</li>
 <li>X31 - Exposição a Frio Natural Excessivo</li>
@@ -2632,113 +2629,160 @@ code span.ot { color: #007020; }
 <li>X39 - Exposição a Outras Forças da Natureza e às Não Especificadas</li>
 </ul></li>
 </ul>
-<p>Base dos códigos CID 10 obtidas <a href="https://github.com/cleytonferrari/CidDataSus/blob/master/CIDImport/Repositorio/Resources/CID-10-CATEGORIAS.CSV">neste repositório</a>:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">library</span>(readr)</a>
-<a class="sourceLine" id="cb2-2" title="2">cid10_desc &lt;-</a>
-<a class="sourceLine" id="cb2-3" title="3"><span class="st">  </span><span class="kw">read_csv2</span>(</a>
-<a class="sourceLine" id="cb2-4" title="4">    <span class="st">&#39;https://raw.githubusercontent.com/cleytonferrari/CidDataSus/master/CIDImport/Repositorio/Resources/CID-10-CATEGORIAS.CSV&#39;</span>,</a>
-<a class="sourceLine" id="cb2-5" title="5">    <span class="dt">locale =</span> <span class="kw">locale</span>(<span class="dt">encoding =</span> <span class="st">&quot;ISO-8859-1&quot;</span>),</a>
-<a class="sourceLine" id="cb2-6" title="6">    <span class="dt">col_names =</span> <span class="kw">c</span>(<span class="st">&quot;cid10&quot;</span>, <span class="ot">NA</span>, <span class="st">&quot;cid10_name&quot;</span>)</a>
-<a class="sourceLine" id="cb2-7" title="7">  ) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="op">-</span>X2)</a></code></pre></div>
+</div>
+<div id="carregando-pacotes" class="section level2">
+<h2>Carregando pacotes</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="co"># devtools::install_github(&quot;rfsaldanha/microdatasus&quot;)</span></a>
+<a class="sourceLine" id="cb1-2" title="2"></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="kw">library</span>(microdatasus)</a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="kw">library</span>(tidyverse)</a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="kw">library</span>(janitor)</a>
+<a class="sourceLine" id="cb1-6" title="6"><span class="kw">library</span>(readr)</a>
+<a class="sourceLine" id="cb1-7" title="7"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb1-8" title="8"><span class="kw">library</span>(purrr)</a>
+<a class="sourceLine" id="cb1-9" title="9"><span class="kw">library</span>(magrittr)</a>
+<a class="sourceLine" id="cb1-10" title="10"><span class="kw">library</span>(beepr)</a>
+<a class="sourceLine" id="cb1-11" title="11"><span class="kw">library</span>(read.dbc)</a>
+<a class="sourceLine" id="cb1-12" title="12"><span class="kw">library</span>(DT)</a>
+<a class="sourceLine" id="cb1-13" title="13"><span class="kw">library</span>(stringr)</a>
+<a class="sourceLine" id="cb1-14" title="14"></a>
+<a class="sourceLine" id="cb1-15" title="15"><span class="co"># Referência ao pipe</span></a>
+<a class="sourceLine" id="cb1-16" title="16"><span class="st">`</span><span class="dt">%&gt;%</span><span class="st">`</span> &lt;-<span class="st"> </span>magrittr<span class="op">::</span><span class="st">`</span><span class="dt">%&gt;%</span><span class="st">`</span></a></code></pre></div>
+</div>
+<div id="download-das-bases" class="section level2">
+<h2>Download das bases</h2>
+<div id="carregar-base-de-códigos-cid-10" class="section level3">
+<h3>Carregar base de códigos CID 10</h3>
+<p>Base dos códigos CID 10 obtidas <a href="https://github.com/cleytonferrari/CidDataSus/blob/master/CIDImport/Repositorio/Resources/CID-10-CATEGORIAS.CSV">neste repositório</a>.</p>
+<p>Faça o download dessa base clicando <a href="https://github.com/cleytonferrari/CidDataSus/raw/master/CIDImport/Repositorio/Resources/CID-10-CATEGORIAS.CSV">neste link</a> com o botão direito, e clicando em “salvar link como”.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">cid10_desc &lt;-</a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="st">  </span>readr<span class="op">::</span><span class="kw">read_csv2</span>(</a>
+<a class="sourceLine" id="cb2-3" title="3">    <span class="st">&#39;https://raw.githubusercontent.com/cleytonferrari/CidDataSus/master/CIDImport/Repositorio/Resources/CID-10-CATEGORIAS.CSV&#39;</span>,</a>
+<a class="sourceLine" id="cb2-4" title="4">    <span class="dt">locale =</span> readr<span class="op">::</span><span class="kw">locale</span>(<span class="dt">encoding =</span> <span class="st">&quot;ISO-8859-1&quot;</span>),</a>
+<a class="sourceLine" id="cb2-5" title="5">    <span class="dt">col_names =</span> <span class="kw">c</span>(<span class="st">&quot;cid10&quot;</span>, <span class="ot">NA</span>, <span class="st">&quot;cid10_name&quot;</span>)</a>
+<a class="sourceLine" id="cb2-6" title="6">  ) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb2-7" title="7"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span>X2)</a></code></pre></div>
+</div>
+<div id="função-para-fazer-download-das-bases-download_bases" class="section level3">
+<h3>Função para fazer download das bases: <code>download_bases()</code></h3>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">download_bases &lt;-<span class="st"> </span><span class="cf">function</span>(ano, <span class="dt">estado =</span> <span class="st">&quot;SP&quot;</span>) {</a>
-<a class="sourceLine" id="cb3-2" title="2"></a>
-<a class="sourceLine" id="cb3-3" title="3">  <span class="cf">if</span> (<span class="op">!</span><span class="kw">file.exists</span>(<span class="st">&quot;download_raw&quot;</span>)) {</a>
-<a class="sourceLine" id="cb3-4" title="4">    <span class="kw">dir.create</span>(<span class="st">&quot;download_raw&quot;</span>, <span class="dt">showWarnings =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb3-5" title="5">    <span class="kw">paste0</span>(<span class="st">&quot;Diretório criado: download_raw&quot;</span>)</a>
-<a class="sourceLine" id="cb3-6" title="6">  }</a>
+<a class="sourceLine" id="cb3-2" title="2">  <span class="cf">if</span> (<span class="op">!</span><span class="kw">file.exists</span>(<span class="st">&quot;download_raw&quot;</span>)) {</a>
+<a class="sourceLine" id="cb3-3" title="3">    <span class="kw">dir.create</span>(<span class="st">&quot;download_raw&quot;</span>, <span class="dt">showWarnings =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb3-4" title="4">    <span class="kw">paste0</span>(<span class="st">&quot;Diretório criado: download_raw&quot;</span>)</a>
+<a class="sourceLine" id="cb3-5" title="5">  }</a>
+<a class="sourceLine" id="cb3-6" title="6">  </a>
 <a class="sourceLine" id="cb3-7" title="7">  </a>
 <a class="sourceLine" id="cb3-8" title="8">  </a>
-<a class="sourceLine" id="cb3-9" title="9">  </a>
-<a class="sourceLine" id="cb3-10" title="10">    <span class="cf">if</span> (<span class="op">!</span><span class="kw">file.exists</span>(<span class="kw">paste0</span>(<span class="st">&quot;download_raw/&quot;</span>, estado, <span class="st">&quot;/&quot;</span>))) {</a>
-<a class="sourceLine" id="cb3-11" title="11">    <span class="kw">dir.create</span>(<span class="kw">paste0</span>(<span class="st">&quot;download_raw/&quot;</span>, estado, <span class="st">&quot;/&quot;</span>), <span class="dt">showWarnings =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb3-12" title="12">    <span class="kw">paste0</span>(<span class="st">&quot;Diretório criado: download_raw/&quot;</span>, estado, <span class="st">&quot;/&quot;</span>)</a>
-<a class="sourceLine" id="cb3-13" title="13">  } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb3-14" title="14">    <span class="kw">paste0</span>(<span class="st">&quot;Diretório já existe: download_raw/&quot;</span>, estado, <span class="st">&quot;/&quot;</span>)</a>
-<a class="sourceLine" id="cb3-15" title="15">  }</a>
+<a class="sourceLine" id="cb3-9" title="9">  <span class="cf">if</span> (<span class="op">!</span><span class="kw">file.exists</span>(<span class="kw">paste0</span>(<span class="st">&quot;download_raw/&quot;</span>, estado, <span class="st">&quot;/&quot;</span>))) {</a>
+<a class="sourceLine" id="cb3-10" title="10">    <span class="kw">dir.create</span>(<span class="kw">paste0</span>(<span class="st">&quot;download_raw/&quot;</span>, estado, <span class="st">&quot;/&quot;</span>), <span class="dt">showWarnings =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb3-11" title="11">    <span class="kw">paste0</span>(<span class="st">&quot;Diretório criado: download_raw/&quot;</span>, estado, <span class="st">&quot;/&quot;</span>)</a>
+<a class="sourceLine" id="cb3-12" title="12">  } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb3-13" title="13">    <span class="kw">paste0</span>(<span class="st">&quot;Diretório já existe: download_raw/&quot;</span>, estado, <span class="st">&quot;/&quot;</span>)</a>
+<a class="sourceLine" id="cb3-14" title="14">  }</a>
+<a class="sourceLine" id="cb3-15" title="15">  </a>
 <a class="sourceLine" id="cb3-16" title="16">  </a>
-<a class="sourceLine" id="cb3-17" title="17">  </a>
-<a class="sourceLine" id="cb3-18" title="18">  <span class="cf">if</span> (<span class="op">!</span><span class="kw">file.exists</span>(<span class="kw">paste0</span>(<span class="st">&quot;download_raw/&quot;</span>, estado, <span class="st">&quot;/DO&quot;</span>, estado, ano , <span class="st">&quot;.dbc&quot;</span>))) {</a>
-<a class="sourceLine" id="cb3-19" title="19">    url &lt;-</a>
-<a class="sourceLine" id="cb3-20" title="20"><span class="st">      </span><span class="kw">paste0</span>(</a>
-<a class="sourceLine" id="cb3-21" title="21">        <span class="st">&quot;ftp://ftp.datasus.gov.br/dissemin/publicos/SIM/CID10/DORES/DO&quot;</span>,</a>
-<a class="sourceLine" id="cb3-22" title="22">        estado,</a>
-<a class="sourceLine" id="cb3-23" title="23">        ano,</a>
-<a class="sourceLine" id="cb3-24" title="24">        <span class="st">&quot;.dbc&quot;</span></a>
-<a class="sourceLine" id="cb3-25" title="25">      )</a>
-<a class="sourceLine" id="cb3-26" title="26">    </a>
-<a class="sourceLine" id="cb3-27" title="27">    <span class="kw">print</span>(<span class="kw">paste0</span>(</a>
-<a class="sourceLine" id="cb3-28" title="28">      <span class="st">&quot;Iniciando o download do arquivo do ano &quot;</span>,</a>
-<a class="sourceLine" id="cb3-29" title="29">      ano,</a>
-<a class="sourceLine" id="cb3-30" title="30">      <span class="st">&quot;, estado &quot;</span>,</a>
-<a class="sourceLine" id="cb3-31" title="31">      estado,</a>
-<a class="sourceLine" id="cb3-32" title="32">      <span class="st">&quot; ...&quot;</span></a>
-<a class="sourceLine" id="cb3-33" title="33">    ))</a>
-<a class="sourceLine" id="cb3-34" title="34">    </a>
-<a class="sourceLine" id="cb3-35" title="35">    <span class="kw">download.file</span>(</a>
-<a class="sourceLine" id="cb3-36" title="36">      url,</a>
-<a class="sourceLine" id="cb3-37" title="37">      <span class="dt">destfile =</span> <span class="kw">paste0</span>(<span class="st">&quot;download_raw/&quot;</span>, estado, <span class="st">&quot;/DO&quot;</span>, estado, ano , <span class="st">&quot;.dbc&quot;</span>),</a>
-<a class="sourceLine" id="cb3-38" title="38">      <span class="dt">method =</span> <span class="st">&quot;curl&quot;</span></a>
-<a class="sourceLine" id="cb3-39" title="39">    )</a>
-<a class="sourceLine" id="cb3-40" title="40">    </a>
-<a class="sourceLine" id="cb3-41" title="41">    <span class="kw">print</span>(<span class="st">&quot;Download completo!&quot;</span>)</a>
-<a class="sourceLine" id="cb3-42" title="42">    beepr<span class="op">::</span><span class="kw">beep</span>(<span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb3-43" title="43">  } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb3-44" title="44">    <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Download realizado anteriormente: &quot;</span>, estado, <span class="st">&quot; &quot;</span>, ano, <span class="st">&quot; ...&quot;</span>))</a>
-<a class="sourceLine" id="cb3-45" title="45">  }</a>
+<a class="sourceLine" id="cb3-17" title="17">  <span class="cf">if</span> (<span class="op">!</span><span class="kw">file.exists</span>(<span class="kw">paste0</span>(<span class="st">&quot;download_raw/&quot;</span>, estado, <span class="st">&quot;/DO&quot;</span>, estado, ano , <span class="st">&quot;.dbc&quot;</span>))) {</a>
+<a class="sourceLine" id="cb3-18" title="18">    url &lt;-</a>
+<a class="sourceLine" id="cb3-19" title="19"><span class="st">      </span><span class="kw">paste0</span>(</a>
+<a class="sourceLine" id="cb3-20" title="20">        <span class="st">&quot;ftp://ftp.datasus.gov.br/dissemin/publicos/SIM/CID10/DORES/DO&quot;</span>,</a>
+<a class="sourceLine" id="cb3-21" title="21">        estado,</a>
+<a class="sourceLine" id="cb3-22" title="22">        ano,</a>
+<a class="sourceLine" id="cb3-23" title="23">        <span class="st">&quot;.dbc&quot;</span></a>
+<a class="sourceLine" id="cb3-24" title="24">      )</a>
+<a class="sourceLine" id="cb3-25" title="25">    </a>
+<a class="sourceLine" id="cb3-26" title="26">    <span class="kw">print</span>(<span class="kw">paste0</span>(</a>
+<a class="sourceLine" id="cb3-27" title="27">      <span class="st">&quot;Iniciando o download do arquivo do ano &quot;</span>,</a>
+<a class="sourceLine" id="cb3-28" title="28">      ano,</a>
+<a class="sourceLine" id="cb3-29" title="29">      <span class="st">&quot;, estado &quot;</span>,</a>
+<a class="sourceLine" id="cb3-30" title="30">      estado,</a>
+<a class="sourceLine" id="cb3-31" title="31">      <span class="st">&quot; ...&quot;</span></a>
+<a class="sourceLine" id="cb3-32" title="32">    ))</a>
+<a class="sourceLine" id="cb3-33" title="33">    </a>
+<a class="sourceLine" id="cb3-34" title="34">    <span class="kw">download.file</span>(</a>
+<a class="sourceLine" id="cb3-35" title="35">      url,</a>
+<a class="sourceLine" id="cb3-36" title="36">      <span class="dt">destfile =</span> <span class="kw">paste0</span>(<span class="st">&quot;download_raw/&quot;</span>, estado, <span class="st">&quot;/DO&quot;</span>, estado, ano , <span class="st">&quot;.dbc&quot;</span>),</a>
+<a class="sourceLine" id="cb3-37" title="37">      <span class="dt">method =</span> <span class="st">&quot;curl&quot;</span></a>
+<a class="sourceLine" id="cb3-38" title="38">    )</a>
+<a class="sourceLine" id="cb3-39" title="39">    </a>
+<a class="sourceLine" id="cb3-40" title="40">    <span class="kw">print</span>(<span class="st">&quot;Download completo!&quot;</span>)</a>
+<a class="sourceLine" id="cb3-41" title="41">    beepr<span class="op">::</span><span class="kw">beep</span>(<span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb3-42" title="42">  } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb3-43" title="43">    <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Download realizado anteriormente: &quot;</span>, estado, <span class="st">&quot; &quot;</span>, ano, <span class="st">&quot; ...&quot;</span>))</a>
+<a class="sourceLine" id="cb3-44" title="44">  }</a>
+<a class="sourceLine" id="cb3-45" title="45">  </a>
 <a class="sourceLine" id="cb3-46" title="46">  </a>
-<a class="sourceLine" id="cb3-47" title="47">  </a>
-<a class="sourceLine" id="cb3-48" title="48">}</a></code></pre></div>
+<a class="sourceLine" id="cb3-47" title="47">}</a></code></pre></div>
+</div>
+<div id="função-para-fazer-um-pré-processamento-e-filtrar-as-bases-filtra_bases" class="section level3">
+<h3>Função para fazer um pré processamento e filtrar as bases: <code>filtra_bases()</code></h3>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">filtra_bases &lt;-<span class="st"> </span><span class="cf">function</span>(ano, <span class="dt">estado =</span> <span class="st">&quot;SP&quot;</span>) {</a>
-<a class="sourceLine" id="cb4-2" title="2">  </a>
-<a class="sourceLine" id="cb4-3" title="3">  <span class="cf">if</span> (<span class="op">!</span><span class="kw">file.exists</span>(<span class="st">&quot;data_processing&quot;</span>)) {</a>
-<a class="sourceLine" id="cb4-4" title="4">    <span class="kw">dir.create</span>(<span class="st">&quot;data_processing&quot;</span>, <span class="dt">showWarnings =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb4-5" title="5">    <span class="kw">paste0</span>(<span class="st">&quot;Diretório criado: data_processing&quot;</span>)</a>
-<a class="sourceLine" id="cb4-6" title="6">  }</a>
+<a class="sourceLine" id="cb4-2" title="2">  <span class="cf">if</span> (<span class="op">!</span><span class="kw">file.exists</span>(<span class="st">&quot;data_processing&quot;</span>)) {</a>
+<a class="sourceLine" id="cb4-3" title="3">    <span class="kw">dir.create</span>(<span class="st">&quot;data_processing&quot;</span>, <span class="dt">showWarnings =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb4-4" title="4">    <span class="kw">paste0</span>(<span class="st">&quot;Diretório criado: data_processing&quot;</span>)</a>
+<a class="sourceLine" id="cb4-5" title="5">  }</a>
+<a class="sourceLine" id="cb4-6" title="6">  </a>
 <a class="sourceLine" id="cb4-7" title="7">  </a>
-<a class="sourceLine" id="cb4-8" title="8">  </a>
-<a class="sourceLine" id="cb4-9" title="9">  <span class="cf">if</span> (<span class="op">!</span><span class="kw">file.exists</span>(<span class="kw">paste0</span>(<span class="st">&quot;data_processing/&quot;</span>, estado, <span class="st">&quot;/&quot;</span>))) {</a>
-<a class="sourceLine" id="cb4-10" title="10">    <span class="kw">dir.create</span>(<span class="kw">paste0</span>(<span class="st">&quot;data_processing/&quot;</span>, estado, <span class="st">&quot;/&quot;</span>), <span class="dt">showWarnings =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb4-11" title="11">    <span class="kw">paste0</span>(<span class="st">&quot;Diretório criado: data_processing/&quot;</span>, estado, <span class="st">&quot;/&quot;</span>)</a>
-<a class="sourceLine" id="cb4-12" title="12">  } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb4-13" title="13">    <span class="kw">paste0</span>(<span class="st">&quot;Diretório já existe: data_processing/&quot;</span>, estado, <span class="st">&quot;/&quot;</span>)</a>
-<a class="sourceLine" id="cb4-14" title="14">  }</a>
+<a class="sourceLine" id="cb4-8" title="8">  <span class="cf">if</span> (<span class="op">!</span><span class="kw">file.exists</span>(<span class="kw">paste0</span>(<span class="st">&quot;data_processing/&quot;</span>, estado, <span class="st">&quot;/&quot;</span>))) {</a>
+<a class="sourceLine" id="cb4-9" title="9">    <span class="kw">dir.create</span>(<span class="kw">paste0</span>(<span class="st">&quot;data_processing/&quot;</span>, estado, <span class="st">&quot;/&quot;</span>), <span class="dt">showWarnings =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb4-10" title="10">    <span class="kw">paste0</span>(<span class="st">&quot;Diretório criado: data_processing/&quot;</span>, estado, <span class="st">&quot;/&quot;</span>)</a>
+<a class="sourceLine" id="cb4-11" title="11">  } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb4-12" title="12">    <span class="kw">paste0</span>(<span class="st">&quot;Diretório já existe: data_processing/&quot;</span>, estado, <span class="st">&quot;/&quot;</span>)</a>
+<a class="sourceLine" id="cb4-13" title="13">  }</a>
+<a class="sourceLine" id="cb4-14" title="14">  </a>
 <a class="sourceLine" id="cb4-15" title="15">  </a>
 <a class="sourceLine" id="cb4-16" title="16">  </a>
-<a class="sourceLine" id="cb4-17" title="17">  </a>
-<a class="sourceLine" id="cb4-18" title="18">  <span class="cf">if</span> (<span class="op">!</span><span class="kw">file.exists</span>(<span class="kw">paste0</span>(<span class="st">&quot;data_processing/&quot;</span>, estado, <span class="st">&quot;/DO&quot;</span>, estado, ano, <span class="st">&quot;_filtrado.RDS&quot;</span>))) {</a>
-<a class="sourceLine" id="cb4-19" title="19">    </a>
-<a class="sourceLine" id="cb4-20" title="20">    <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Abrindo a base: &quot;</span>, ano, <span class="st">&quot; &quot;</span>, estado, <span class="st">&quot;...&quot;</span>))</a>
-<a class="sourceLine" id="cb4-21" title="21">    </a>
-<a class="sourceLine" id="cb4-22" title="22">    base_raw &lt;-</a>
-<a class="sourceLine" id="cb4-23" title="23"><span class="st">      </span>read.dbc<span class="op">::</span><span class="kw">read.dbc</span>(<span class="kw">paste0</span>(<span class="st">&quot;download_raw/&quot;</span>, estado, <span class="st">&quot;/DO&quot;</span>, estado, ano, <span class="st">&quot;.dbc&quot;</span>))</a>
-<a class="sourceLine" id="cb4-24" title="24">    </a>
-<a class="sourceLine" id="cb4-25" title="25">    <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Base aberta: &quot;</span>, estado, <span class="st">&quot; &quot;</span>,  ano, <span class="st">&quot;...&quot;</span>))</a>
+<a class="sourceLine" id="cb4-17" title="17">  <span class="cf">if</span> (<span class="op">!</span><span class="kw">file.exists</span>(<span class="kw">paste0</span>(</a>
+<a class="sourceLine" id="cb4-18" title="18">    <span class="st">&quot;data_processing/&quot;</span>,</a>
+<a class="sourceLine" id="cb4-19" title="19">    estado,</a>
+<a class="sourceLine" id="cb4-20" title="20">    <span class="st">&quot;/DO&quot;</span>,</a>
+<a class="sourceLine" id="cb4-21" title="21">    estado,</a>
+<a class="sourceLine" id="cb4-22" title="22">    ano,</a>
+<a class="sourceLine" id="cb4-23" title="23">    <span class="st">&quot;_filtrado.RDS&quot;</span></a>
+<a class="sourceLine" id="cb4-24" title="24">  ))) {</a>
+<a class="sourceLine" id="cb4-25" title="25">    <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Abrindo a base: &quot;</span>, ano, <span class="st">&quot; &quot;</span>, estado, <span class="st">&quot;...&quot;</span>))</a>
 <a class="sourceLine" id="cb4-26" title="26">    </a>
-<a class="sourceLine" id="cb4-27" title="27">    base_filtrada &lt;-<span class="st"> </span>base_raw <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb4-28" title="28"><span class="st">      </span>microdatasus<span class="op">::</span><span class="kw">process_sim</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb4-29" title="29"><span class="st">      </span>janitor<span class="op">::</span><span class="kw">clean_names</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb4-30" title="30"><span class="st">      </span><span class="kw">filter</span>(<span class="kw">str_detect</span>(causabas, <span class="st">&quot;X3&quot;</span>))</a>
+<a class="sourceLine" id="cb4-27" title="27">    base_raw &lt;-</a>
+<a class="sourceLine" id="cb4-28" title="28"><span class="st">      </span>read.dbc<span class="op">::</span><span class="kw">read.dbc</span>(<span class="kw">paste0</span>(<span class="st">&quot;download_raw/&quot;</span>, estado, <span class="st">&quot;/DO&quot;</span>, estado, ano, <span class="st">&quot;.dbc&quot;</span>))</a>
+<a class="sourceLine" id="cb4-29" title="29">    </a>
+<a class="sourceLine" id="cb4-30" title="30">    <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Base aberta: &quot;</span>, estado, <span class="st">&quot; &quot;</span>,  ano, <span class="st">&quot;...&quot;</span>))</a>
 <a class="sourceLine" id="cb4-31" title="31">    </a>
-<a class="sourceLine" id="cb4-32" title="32">    <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Base filtrada: &quot;</span>, estado, <span class="st">&quot; &quot;</span>, ano, <span class="st">&quot;...&quot;</span>))</a>
-<a class="sourceLine" id="cb4-33" title="33">    </a>
-<a class="sourceLine" id="cb4-34" title="34">    <span class="kw">saveRDS</span>(base_filtrada,</a>
-<a class="sourceLine" id="cb4-35" title="35">            <span class="dt">file =</span> <span class="kw">paste0</span>(<span class="st">&quot;data_processing/&quot;</span>, estado, <span class="st">&quot;/DO&quot;</span>, estado , ano, <span class="st">&quot;_filtrado.RDS&quot;</span>))</a>
+<a class="sourceLine" id="cb4-32" title="32">    base_filtrada &lt;-<span class="st"> </span>base_raw <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-33" title="33"><span class="st">      </span>microdatasus<span class="op">::</span><span class="kw">process_sim</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-34" title="34"><span class="st">      </span>janitor<span class="op">::</span><span class="kw">clean_names</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-35" title="35"><span class="st">      </span>dplyr<span class="op">::</span><span class="kw">filter</span>(<span class="kw">str_detect</span>(causabas, <span class="st">&quot;X3&quot;</span>))</a>
 <a class="sourceLine" id="cb4-36" title="36">    </a>
-<a class="sourceLine" id="cb4-37" title="37">    <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Base exportada: &quot;</span>, estado, <span class="st">&quot; &quot;</span>, ano, <span class="st">&quot;...&quot;</span>))</a>
+<a class="sourceLine" id="cb4-37" title="37">    <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Base filtrada: &quot;</span>, estado, <span class="st">&quot; &quot;</span>, ano, <span class="st">&quot;...&quot;</span>))</a>
 <a class="sourceLine" id="cb4-38" title="38">    </a>
-<a class="sourceLine" id="cb4-39" title="39">    </a>
-<a class="sourceLine" id="cb4-40" title="40">    </a>
-<a class="sourceLine" id="cb4-41" title="41">  } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb4-42" title="42">    <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Base filtrada anteriormente: &quot;</span>, estado, <span class="st">&quot; &quot;</span>, ano, <span class="st">&quot; ...&quot;</span>))</a>
-<a class="sourceLine" id="cb4-43" title="43">  }</a>
-<a class="sourceLine" id="cb4-44" title="44">  </a>
-<a class="sourceLine" id="cb4-45" title="45">  </a>
-<a class="sourceLine" id="cb4-46" title="46">  </a>
-<a class="sourceLine" id="cb4-47" title="47">}</a></code></pre></div>
+<a class="sourceLine" id="cb4-39" title="39">    <span class="kw">saveRDS</span>(</a>
+<a class="sourceLine" id="cb4-40" title="40">      base_filtrada,</a>
+<a class="sourceLine" id="cb4-41" title="41">      <span class="dt">file =</span> <span class="kw">paste0</span>(</a>
+<a class="sourceLine" id="cb4-42" title="42">        <span class="st">&quot;data_processing/&quot;</span>,</a>
+<a class="sourceLine" id="cb4-43" title="43">        estado,</a>
+<a class="sourceLine" id="cb4-44" title="44">        <span class="st">&quot;/DO&quot;</span>,</a>
+<a class="sourceLine" id="cb4-45" title="45">        estado ,</a>
+<a class="sourceLine" id="cb4-46" title="46">        ano,</a>
+<a class="sourceLine" id="cb4-47" title="47">        <span class="st">&quot;_filtrado.RDS&quot;</span></a>
+<a class="sourceLine" id="cb4-48" title="48">      )</a>
+<a class="sourceLine" id="cb4-49" title="49">    )</a>
+<a class="sourceLine" id="cb4-50" title="50">    </a>
+<a class="sourceLine" id="cb4-51" title="51">    <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Base exportada: &quot;</span>, estado, <span class="st">&quot; &quot;</span>, ano, <span class="st">&quot;...&quot;</span>))</a>
+<a class="sourceLine" id="cb4-52" title="52">    </a>
+<a class="sourceLine" id="cb4-53" title="53">    </a>
+<a class="sourceLine" id="cb4-54" title="54">    </a>
+<a class="sourceLine" id="cb4-55" title="55">  } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb4-56" title="56">    <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Base filtrada anteriormente: &quot;</span>, estado, <span class="st">&quot; &quot;</span>, ano, <span class="st">&quot; ...&quot;</span>))</a>
+<a class="sourceLine" id="cb4-57" title="57">  }</a>
+<a class="sourceLine" id="cb4-58" title="58">  </a>
+<a class="sourceLine" id="cb4-59" title="59">  </a>
+<a class="sourceLine" id="cb4-60" title="60">  </a>
+<a class="sourceLine" id="cb4-61" title="61">}</a></code></pre></div>
+</div>
+<div id="vetores-com-os-estados-brasileiros-e-anos-em-que-as-bases-estão-disponívels" class="section level3">
+<h3>Vetores com os estados brasileiros e anos em que as bases estão disponívels</h3>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">anos &lt;-<span class="st"> </span><span class="dv">1996</span><span class="op">:</span><span class="dv">2017</span></a>
 <a class="sourceLine" id="cb5-2" title="2"></a>
 <a class="sourceLine" id="cb5-3" title="3">estados &lt;-<span class="st"> </span><span class="kw">c</span>(</a>
-<a class="sourceLine" id="cb5-4" title="4">   <span class="st">&quot;AC&quot;</span>,</a>
+<a class="sourceLine" id="cb5-4" title="4">  <span class="st">&quot;AC&quot;</span>,</a>
 <a class="sourceLine" id="cb5-5" title="5">  <span class="st">&quot;AL&quot;</span>,</a>
 <a class="sourceLine" id="cb5-6" title="6">  <span class="st">&quot;AP&quot;</span>,</a>
 <a class="sourceLine" id="cb5-7" title="7">  <span class="st">&quot;AM&quot;</span>,</a>
@@ -2766,42 +2810,58 @@ code span.ot { color: #007020; }
 <a class="sourceLine" id="cb5-29" title="29">  <span class="st">&quot;SE&quot;</span>,</a>
 <a class="sourceLine" id="cb5-30" title="30">  <span class="st">&quot;TO&quot;</span></a>
 <a class="sourceLine" id="cb5-31" title="31">)</a></code></pre></div>
+</div>
+<div id="baixando-e-filtrandos-todas-as-bases" class="section level3">
+<h3>Baixando e filtrandos todas as bases</h3>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">27</span>) {</a>
 <a class="sourceLine" id="cb6-2" title="2">  purrr<span class="op">::</span><span class="kw">walk2</span>(anos, estados[i], <span class="dt">.f =</span> download_bases)</a>
-<a class="sourceLine" id="cb6-3" title="3">  </a>
+<a class="sourceLine" id="cb6-3" title="3">  purrr<span class="op">::</span><span class="kw">walk2</span>(anos, estados[i], <span class="dt">.f =</span> filtra_bases)</a>
 <a class="sourceLine" id="cb6-4" title="4">}</a></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">27</span>) {</a>
-<a class="sourceLine" id="cb7-2" title="2">  purrr<span class="op">::</span><span class="kw">walk2</span>(anos, estados[i], <span class="dt">.f =</span> filtra_bases)</a>
-<a class="sourceLine" id="cb7-3" title="3">  </a>
-<a class="sourceLine" id="cb7-4" title="4">}</a></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">dados &lt;-</a>
-<a class="sourceLine" id="cb8-2" title="2"><span class="st">  </span><span class="kw">list.files</span>(</a>
-<a class="sourceLine" id="cb8-3" title="3">    <span class="dt">path =</span> <span class="st">&quot;data_processing/&quot;</span>,</a>
-<a class="sourceLine" id="cb8-4" title="4">    <span class="dt">pattern =</span> <span class="st">&quot;.RDS&quot;</span>,</a>
-<a class="sourceLine" id="cb8-5" title="5">    <span class="dt">recursive =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb8-6" title="6">    <span class="dt">full.names =</span> <span class="ot">TRUE</span></a>
-<a class="sourceLine" id="cb8-7" title="7">  ) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">map_dfr</span>(readRDS)</a>
-<a class="sourceLine" id="cb8-8" title="8"></a>
-<a class="sourceLine" id="cb8-9" title="9"><span class="kw">saveRDS</span>(dados, <span class="dt">file =</span> <span class="st">&quot;dados/base_filtrada.RDS&quot;</span>)</a></code></pre></div>
+</div>
+</div>
+<div id="preparando-a-base-única" class="section level2">
+<h2>Preparando a base única</h2>
+<div id="carregando-todas-as-bases-filtradas-em-um-único-dataframe" class="section level3">
+<h3>Carregando todas as bases filtradas em um único dataframe</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">dados &lt;-</a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="st">  </span><span class="kw">list.files</span>(</a>
+<a class="sourceLine" id="cb7-3" title="3">    <span class="dt">path =</span> <span class="st">&quot;data_processing/&quot;</span>,</a>
+<a class="sourceLine" id="cb7-4" title="4">    <span class="dt">pattern =</span> <span class="st">&quot;.RDS&quot;</span>,</a>
+<a class="sourceLine" id="cb7-5" title="5">    <span class="dt">recursive =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb7-6" title="6">    <span class="dt">full.names =</span> <span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb7-7" title="7">  ) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb7-8" title="8"><span class="st">  </span>purrr<span class="op">::</span><span class="kw">map_dfr</span>(readRDS)</a></code></pre></div>
+</div>
+<div id="salva-o-dataframe-criado-na-etapa-anterior" class="section level3">
+<h3>Salva o dataframe criado na etapa anterior</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">saveRDS</span>(dados, <span class="dt">file =</span> <span class="st">&quot;dados/base_filtrada.RDS&quot;</span>)</a></code></pre></div>
+<p>Faça o download dessa base clicando <a href="https://github.com/beatrizmilz/R-Ladies-SP-DataSUS/raw/master/dados/base_filtrada.RDS">neste link</a>.</p>
+</div>
+<div id="carrega-o-dataframe-criado" class="section level3">
+<h3>Carrega o dataframe criado</h3>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">base_filtrada &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;dados/base_filtrada.RDS&quot;</span>)</a></code></pre></div>
+</div>
+<div id="cria-uma-nova-coluna-com-o-cid-10-e-usando-o-left_join-cria-uma-coluna-com-a-descrição-do-cid-10" class="section level3">
+<h3>Cria uma nova coluna com o CID 10, e usando o <code>left_join()</code> cria uma coluna com a descrição do CID 10</h3>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">base_filtrada_cid10 &lt;-<span class="st"> </span>base_filtrada <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb10-2" title="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cid10 =</span> <span class="kw">str_extract</span>(causabas, <span class="st">&quot;^.{0,3}&quot;</span>))  <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb10-3" title="3"><span class="st">  </span><span class="kw">left_join</span>(<span class="dt">y =</span> cid10_desc)</a></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"> base_filtrada_cid10 <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb11-2" title="2"><span class="st">  </span></a>
-<a class="sourceLine" id="cb11-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(cid10, cid10_name) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb11-4" title="4"><span class="st">  </span></a>
-<a class="sourceLine" id="cb11-5" title="5"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb11-6" title="6"><span class="st">  </span></a>
-<a class="sourceLine" id="cb11-7" title="7"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(n)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb11-8" title="8"><span class="st">  </span></a>
-<a class="sourceLine" id="cb11-9" title="9"><span class="st">  </span>DT<span class="op">::</span><span class="kw">datatable</span>()</a></code></pre></div>
-<div id="htmlwidget-838d45571c08dc0e6443" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-838d45571c08dc0e6443">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10"],["X33","X36","X37","X31","X30","X39","X38","X34","X32","X35"],["Vítima de raio","Vítima de avalanche, desabamento de terra e outros movimentos da superfície terrestre","Vítima de tempestade cataclísmica","Exposição a frio natural excessivo","Exposição a calor natural excessivo","Exposição a outras forças da natureza e às não especificadas","Vítima de inundação","Vítima de terremoto","Exposição à luz solar","Vítima de erupção vulcânica"],[2314,1423,1157,193,79,58,40,31,23,2]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>cid10<\/th>\n      <th>cid10_name<\/th>\n      <th>n<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":3},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<a class="sourceLine" id="cb10-2" title="2"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">cid10 =</span> stringr<span class="op">::</span><span class="kw">str_extract</span>(causabas, <span class="st">&quot;^.{0,3}&quot;</span>))  <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb10-3" title="3"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">left_join</span>(<span class="dt">y =</span> cid10_desc)</a></code></pre></div>
+</div>
+<div id="exemplo-dos-cid-10-encontrados" class="section level3">
+<h3>Exemplo dos CID 10 encontrados</h3>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">base_filtrada_cid10 <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb11-2" title="2"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">group_by</span>(cid10, cid10_name) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb11-3" title="3"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">summarise</span>(<span class="dt">n =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb11-4" title="4"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">arrange</span>(<span class="kw">desc</span>(n)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb11-5" title="5"><span class="st">  </span>DT<span class="op">::</span><span class="kw">datatable</span>()</a></code></pre></div>
+<div id="htmlwidget-af7d4be2e67766d6b86e" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-af7d4be2e67766d6b86e">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10"],["X33","X36","X37","X31","X30","X39","X38","X34","X32","X35"],["Vítima de raio","Vítima de avalanche, desabamento de terra e outros movimentos da superfície terrestre","Vítima de tempestade cataclísmica","Exposição a frio natural excessivo","Exposição a calor natural excessivo","Exposição a outras forças da natureza e às não especificadas","Vítima de inundação","Vítima de terremoto","Exposição à luz solar","Vítima de erupção vulcânica"],[2314,1423,1157,193,79,58,40,31,23,2]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>cid10<\/th>\n      <th>cid10_name<\/th>\n      <th>n<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":3},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <p>Ideias para perguntas:</p>
 <ul>
 <li><code>base %&gt;% filter(is.na(natural), is.na(mun_res_uf))</code></li>
 </ul>
+</div>
+</div>
 </article>
 </div>
 </div>

@@ -11,23 +11,17 @@ output:
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
-```{r }
-# devtools::install_github("rfsaldanha/microdatasus")
+## Informações importantes 
 
-library(microdatasus)
-library(tidyverse)
-library(janitor)
-```
-
-- Links úteis: 
-
-- [Artigo: 'Microdatasus: pacote para download e pré-processamento de microdados do Departamento de Informática do SUS (DATASUS)'](http://www.scielo.br/scielo.php?script=sci_arttext&pid=S0102-311X2019001104001&tlng=pt)
+- Artigo: ['Microdatasus: pacote para download e pré-processamento de microdados do Departamento de Informática do SUS (DATASUS)'](http://www.scielo.br/scielo.php?script=sci_arttext&pid=S0102-311X2019001104001&tlng=pt)
 
 
-- [Informações sobre essa base de dados](https://github.com/rfsaldanha/microdatasus/wiki/Conven%C3%A7%C3%B5es-SIM)
+- Informações sobre essa [base de dados](https://github.com/rfsaldanha/microdatasus/wiki/Conven%C3%A7%C3%B5es-SIM)
 
-- CID 10: http://www.medicinanet.com.br/cid10/x.htm
+- Descrição sobre o [CID 10](http://www.medicinanet.com.br/cid10/x.htm)
  
+- Códigos CID 10 que tem relação com condições climáticas:
+
   - X30 - Exposição a Calor Natural Excessivo
   - X31 - Exposição a Frio Natural Excessivo
   - X32 - Exposição à Luz Solar
@@ -38,27 +32,50 @@ library(janitor)
   - X37 - Vítima de Tempestade Cataclísmica
   - X38 - Vítima de Inundação
   - X39 - Exposição a Outras Forças da Natureza e às Não Especificadas
-  
 
+## Carregando pacotes
 
-Base dos códigos CID 10 obtidas [neste repositório](https://github.com/cleytonferrari/CidDataSus/blob/master/CIDImport/Repositorio/Resources/CID-10-CATEGORIAS.CSV):
+```{r }
+# devtools::install_github("rfsaldanha/microdatasus")
+
+library(microdatasus)
+library(tidyverse)
+library(janitor)
+library(readr)
+library(dplyr)
+library(purrr)
+library(magrittr)
+library(beepr)
+library(read.dbc)
+library(DT)
+library(stringr)
+
+# Referência ao pipe
+`%>%` <- magrittr::`%>%`
+```
+
+## Download das bases
+
+### Carregar base de códigos CID 10 
+
+Base dos códigos CID 10 obtidas [neste repositório](https://github.com/cleytonferrari/CidDataSus/blob/master/CIDImport/Repositorio/Resources/CID-10-CATEGORIAS.CSV).
+
+Faça o download dessa base clicando [neste link](https://github.com/cleytonferrari/CidDataSus/raw/master/CIDImport/Repositorio/Resources/CID-10-CATEGORIAS.CSV) com o botão direito, e clicando em "salvar link como".
 
 ```{r}
-
-library(readr)
 cid10_desc <-
-  read_csv2(
+  readr::read_csv2(
     'https://raw.githubusercontent.com/cleytonferrari/CidDataSus/master/CIDImport/Repositorio/Resources/CID-10-CATEGORIAS.CSV',
-    locale = locale(encoding = "ISO-8859-1"),
+    locale = readr::locale(encoding = "ISO-8859-1"),
     col_names = c("cid10", NA, "cid10_name")
-  ) %>% select(-X2)
+  ) %>% 
+  dplyr::select(-X2)
 
 ```
 
-
+### Função para fazer download das bases: `download_bases()`
 ```{r eval=FALSE, include=TRUE}
 download_bases <- function(ano, estado = "SP") {
-
   if (!file.exists("download_raw")) {
     dir.create("download_raw", showWarnings = FALSE)
     paste0("Diretório criado: download_raw")
@@ -66,7 +83,7 @@ download_bases <- function(ano, estado = "SP") {
   
   
   
-    if (!file.exists(paste0("download_raw/", estado, "/"))) {
+  if (!file.exists(paste0("download_raw/", estado, "/"))) {
     dir.create(paste0("download_raw/", estado, "/"), showWarnings = FALSE)
     paste0("Diretório criado: download_raw/", estado, "/")
   } else {
@@ -109,9 +126,10 @@ download_bases <- function(ano, estado = "SP") {
 
 ```
 
+
+### Função para fazer um pré processamento e filtrar as bases: `filtra_bases()`
 ```{r  eval=FALSE, include=TRUE}
 filtra_bases <- function(ano, estado = "SP") {
-  
   if (!file.exists("data_processing")) {
     dir.create("data_processing", showWarnings = FALSE)
     paste0("Diretório criado: data_processing")
@@ -127,8 +145,14 @@ filtra_bases <- function(ano, estado = "SP") {
   
   
   
-  if (!file.exists(paste0("data_processing/", estado, "/DO", estado, ano, "_filtrado.RDS"))) {
-    
+  if (!file.exists(paste0(
+    "data_processing/",
+    estado,
+    "/DO",
+    estado,
+    ano,
+    "_filtrado.RDS"
+  ))) {
     print(paste0("Abrindo a base: ", ano, " ", estado, "..."))
     
     base_raw <-
@@ -139,12 +163,21 @@ filtra_bases <- function(ano, estado = "SP") {
     base_filtrada <- base_raw %>%
       microdatasus::process_sim() %>%
       janitor::clean_names() %>%
-      filter(str_detect(causabas, "X3"))
+      dplyr::filter(str_detect(causabas, "X3"))
     
     print(paste0("Base filtrada: ", estado, " ", ano, "..."))
     
-    saveRDS(base_filtrada,
-            file = paste0("data_processing/", estado, "/DO", estado , ano, "_filtrado.RDS"))
+    saveRDS(
+      base_filtrada,
+      file = paste0(
+        "data_processing/",
+        estado,
+        "/DO",
+        estado ,
+        ano,
+        "_filtrado.RDS"
+      )
+    )
     
     print(paste0("Base exportada: ", estado, " ", ano, "..."))
     
@@ -159,11 +192,13 @@ filtra_bases <- function(ano, estado = "SP") {
 }
 ```
 
+
+### Vetores com os estados brasileiros e anos em que as bases estão disponívels 
 ```{r}
 anos <- 1996:2017
 
 estados <- c(
-   "AC",
+  "AC",
   "AL",
   "AP",
   "AM",
@@ -194,27 +229,20 @@ estados <- c(
 
 ```
 
+
+### Baixando e filtrandos todas as bases
+
 ```{r eval=FALSE, include=TRUE}
-
-
 for (i in 1:27) {
   purrr::walk2(anos, estados[i], .f = download_bases)
-  
-}
-
-
-```
-
-```{r  eval=FALSE, include=TRUE}
-
-for (i in 1:27) {
   purrr::walk2(anos, estados[i], .f = filtra_bases)
-  
 }
-
 
 ```
 
+## Preparando a base única
+
+### Carregando todas as bases filtradas em um único dataframe
 
 ```{r  eval=FALSE, include=TRUE, message=FALSE, warning=FALSE}
 dados <-
@@ -223,33 +251,38 @@ dados <-
     pattern = ".RDS",
     recursive = TRUE,
     full.names = TRUE
-  ) %>% map_dfr(readRDS)
+  ) %>% 
+  purrr::map_dfr(readRDS)
 
+```
+
+### Salva o dataframe criado na etapa anterior
+```{r eval=FALSE, include=TRUE, message=FALSE, warning=FALSE}
 saveRDS(dados, file = "dados/base_filtrada.RDS")
 ```
 
+Faça o download dessa base clicando [neste link](https://github.com/beatrizmilz/R-Ladies-SP-DataSUS/raw/master/dados/base_filtrada.RDS).
+
+
+### Carrega o dataframe criado
 ```{r}
 base_filtrada <- readRDS("dados/base_filtrada.RDS")
-
 ```
 
-
+### Cria uma nova coluna com o CID 10, e usando o `left_join()` cria uma coluna com a descrição do CID 10
 ```{r}
 base_filtrada_cid10 <- base_filtrada %>%
-  mutate(cid10 = str_extract(causabas, "^.{0,3}"))  %>% 
-  left_join(y = cid10_desc)
+  dplyr::mutate(cid10 = stringr::str_extract(causabas, "^.{0,3}"))  %>% 
+  dplyr::left_join(y = cid10_desc)
 ```
 
+### Exemplo dos CID 10 encontrados
 
 ```{r}
- base_filtrada_cid10 %>%
-  
-  group_by(cid10, cid10_name) %>%
-  
-  summarise(n = n()) %>%
-  
-  arrange(desc(n)) %>% 
-  
+base_filtrada_cid10 %>%
+  dplyr::group_by(cid10, cid10_name) %>%
+  dplyr::summarise(n = n()) %>%
+  dplyr::arrange(desc(n)) %>%
   DT::datatable()
 ```
 
