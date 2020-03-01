@@ -286,6 +286,23 @@ base_filtrada_cid10 %>%
   DT::datatable()
 ```
 
-Ideias para perguntas:
+## Para o meetup:
 
-- `base %>% filter(is.na(natural), is.na(mun_res_uf))` 
+### Downloads:
+
+  - Base do CID 10 - clicando [neste link](https://github.com/cleytonferrari/CidDataSus/raw/master/CIDImport/Repositorio/Resources/CID-10-CATEGORIAS.CSV) com o botão direito, e clicando em "salvar link como".
+   - Base unificada e filtrada,  clicando [neste link](https://github.com/beatrizmilz/R-Ladies-SP-DataSUS/raw/master/dados/base_filtrada.RDS).  
+
+
+### Colunas importantes:
+
+- `dtobito`
+- `sexo`
+- `racacor`
+
+### Ideias para perguntas:
+
+- Porque tem tanto NA? Ex: `base %>% filter(is.na(natural), is.na(mun_res_uf))` 
+- As mulheres morrem mais do que os homens por essas causas?
+- Em quais estados brasileiros estes códigos são mais frequentes?
+- Tem aumentado ao longo do tempo?

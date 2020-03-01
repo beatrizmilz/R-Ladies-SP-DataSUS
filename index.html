@@ -2854,11 +2854,34 @@ code span.ot { color: #007020; }
 <a class="sourceLine" id="cb11-3" title="3"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">summarise</span>(<span class="dt">n =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb11-4" title="4"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">arrange</span>(<span class="kw">desc</span>(n)) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb11-5" title="5"><span class="st">  </span>DT<span class="op">::</span><span class="kw">datatable</span>()</a></code></pre></div>
-<div id="htmlwidget-af7d4be2e67766d6b86e" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-af7d4be2e67766d6b86e">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10"],["X33","X36","X37","X31","X30","X39","X38","X34","X32","X35"],["Vítima de raio","Vítima de avalanche, desabamento de terra e outros movimentos da superfície terrestre","Vítima de tempestade cataclísmica","Exposição a frio natural excessivo","Exposição a calor natural excessivo","Exposição a outras forças da natureza e às não especificadas","Vítima de inundação","Vítima de terremoto","Exposição à luz solar","Vítima de erupção vulcânica"],[2314,1423,1157,193,79,58,40,31,23,2]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>cid10<\/th>\n      <th>cid10_name<\/th>\n      <th>n<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":3},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
-<p>Ideias para perguntas:</p>
+<div id="htmlwidget-21975653ab8fd0d3cdf5" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-21975653ab8fd0d3cdf5">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10"],["X33","X36","X37","X31","X30","X39","X38","X34","X32","X35"],["Vítima de raio","Vítima de avalanche, desabamento de terra e outros movimentos da superfície terrestre","Vítima de tempestade cataclísmica","Exposição a frio natural excessivo","Exposição a calor natural excessivo","Exposição a outras forças da natureza e às não especificadas","Vítima de inundação","Vítima de terremoto","Exposição à luz solar","Vítima de erupção vulcânica"],[2314,1423,1157,193,79,58,40,31,23,2]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>cid10<\/th>\n      <th>cid10_name<\/th>\n      <th>n<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":3},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div id="para-o-meetup" class="section level2">
+<h2>Para o meetup:</h2>
+<div id="downloads" class="section level3">
+<h3>Downloads:</h3>
 <ul>
-<li><code>base %&gt;% filter(is.na(natural), is.na(mun_res_uf))</code></li>
+<li>Base do CID 10 - clicando <a href="https://github.com/cleytonferrari/CidDataSus/raw/master/CIDImport/Repositorio/Resources/CID-10-CATEGORIAS.CSV">neste link</a> com o botão direito, e clicando em “salvar link como”.</li>
+<li>Base unificada e filtrada, clicando <a href="https://github.com/beatrizmilz/R-Ladies-SP-DataSUS/raw/master/dados/base_filtrada.RDS">neste link</a>.</li>
+</ul>
+</div>
+<div id="colunas-importantes" class="section level3">
+<h3>Colunas importantes:</h3>
+<ul>
+<li><code>dtobito</code></li>
+<li><code>sexo</code></li>
+<li><code>racacor</code></li>
+</ul>
+</div>
+<div id="ideias-para-perguntas" class="section level3">
+<h3>Ideias para perguntas:</h3>
+<ul>
+<li>Porque tem tanto NA? Ex: <code>base %&gt;% filter(is.na(natural), is.na(mun_res_uf))</code></li>
+<li>As mulheres morrem mais do que os homens por essas causas?</li>
+<li>Em quais estados brasileiros estes códigos são mais frequentes?</li>
+<li>Tem aumentado ao longo do tempo?</li>
 </ul>
 </div>
 </div>
