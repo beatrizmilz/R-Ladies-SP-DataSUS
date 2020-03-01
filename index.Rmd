@@ -322,6 +322,7 @@ base_filtrada_cid10 %>%
 - `dtobito`
 - `sexo`
 - `racacor`
+- `uf`
 
 ### Ideias para perguntas:
 

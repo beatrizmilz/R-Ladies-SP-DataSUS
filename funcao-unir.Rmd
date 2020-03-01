@@ -1,0 +1,79 @@
+---
+title: "Unindo todas os dados de mortalidade no DataSUS"
+author: "Beatriz Milz e Jean Prado"
+date: "Março - 2020 <p><center> <a class='github-button' href='https://github.com/beatrizmilz/R-Ladies-SP-DataSUS' data-color-scheme='no-preference: light; light: light; dark: dark;' data-size='large' data-show-count='true' aria-label='Star beatrizmilz/R-Ladies-SP-DataSUS on GitHub'>Acesse este repositório</a>  </center></p>"
+output:
+  prettydoc::html_pretty:
+    theme: leonids
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Referência ao pipe
+`%>%` <- magrittr::`%>%`
+```
+
+```{r eval=FALSE, include=TRUE, message=FALSE, warning=FALSE}
+une_dados_originais <- function(estado){
+  
+    if (!file.exists("data_estados")) {
+    dir.create("data_estados", showWarnings = FALSE)
+    paste0("Diretório criado: data_estados")
+  }
+  
+  
+  if (!file.exists(paste0( "data_estados/DO", estado, "_1996_2017.RDS"
+  ))) {
+  list.files(
+    path = paste0("download_raw/", estado, "/"), 
+    pattern = ".dbc",
+    recursive = TRUE,
+    full.names = TRUE
+  ) %>% 
+  purrr::map_dfr(read.dbc::read.dbc) %>% 
+    microdatasus::process_sim() %>%
+      janitor::clean_names() %>%
+      dplyr::mutate(uf = estado) %>%
+    saveRDS(file = paste0("data_estados/DO", estado, "_1996_2017.RDS"))
+    
+    print(paste0("Base exportada: ", estado, " ..."))
+    
+  } else {
+    print(paste0("Base unida anteriormente: ", estado, " ..."))
+  }
+}
+
+
+```
+
+```{r eval=FALSE, include=TRUE, message=FALSE, warning=FALSE}
+for (i in 1:27) {
+  purrr::walk(estados[i], .f = une_dados_originais)
+}
+```
+
+
+```{r  eval=FALSE, include=TRUE, message=FALSE, warning=FALSE}
+dados_completos <-
+  list.files(
+    path = "data_estados/",
+    pattern = ".RDS",
+    recursive = TRUE,
+    full.names = TRUE
+  ) %>% 
+  purrr::map_dfr(readRDS)
+
+```
+
+**Erro: memória esgotada (limite atingido?)**
+
+**Erros durante o embrulho: memória esgotada (limite atingido?) **
+
+```{r eval=FALSE, include=TRUE, message=FALSE, warning=FALSE}
+saveRDS(dados_completos, file = "dados/base_completa.RDS")
+```
+
