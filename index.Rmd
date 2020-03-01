@@ -172,7 +172,9 @@ filtra_bases <- function(ano, estado = "SP") {
     base_filtrada <- base_raw %>%
       microdatasus::process_sim() %>%
       janitor::clean_names() %>%
-      dplyr::filter(str_detect(causabas, "X3"))
+      dplyr::filter(str_detect(causabas, "X3")) %>%
+      dplyr::mutate(uf = estado)
+    
     
     print(paste0("Base filtrada: ", estado, " ", ano, "..."))
     
@@ -297,6 +299,16 @@ base_filtrada_cid10 %>%
   DT::datatable()
 ```
 
+
+```{r}
+base_filtrada_cid10 %>%
+  dplyr::group_by(uf) %>%
+  dplyr::summarise(n = n()) %>%
+  dplyr::arrange(uf) %>%
+  DT::datatable()
+
+```
+
 ## Para o meetup:
 
 ### Downloads:
@@ -317,3 +329,4 @@ base_filtrada_cid10 %>%
 - As mulheres morrem mais do que os homens por essas causas?
 - Em quais estados brasileiros estes códigos são mais frequentes?
 - Tem aumentado ao longo do tempo?
+
