@@ -9,8 +9,13 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
+
+<!-- Place this tag in your head or just before your close body tag. -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+Esse código é uma continuação [deste aqui](https://datasus-rladies-sp.netlify.com/). Não está completo.
 
 ```{r}
 # Referência ao pipe
