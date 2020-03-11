@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 
-Esse código é uma continuação [deste aqui](https://datasus-rladies-sp.netlify.com/). Não está completo.
+Esse código é uma continuação [deste aqui](https://datathon-rladies-sp-2020.netlify.com/datasus.html). Não está completo.
 
 ```{r}
 # Referência ao pipe

@@ -1,7 +1,7 @@
 ---
 title: "Como as mudanças climáticas afetam as mulheres no mundo?"
 author: "Beatriz Milz e Jean Prado"
-date: "março de 2020"
+date: "Março de 2020  <p><center> <a class='github-button' href='https://github.com/beatrizmilz/R-Ladies-SP-DataSUS' data-color-scheme='no-preference: light; light: light; dark: dark;' data-size='large' data-show-count='true' aria-label='Star beatrizmilz/R-Ladies-SP-DataSUS on GitHub'>Acesse este repositório</a>  </center></p>"
 output:
   prettydoc::html_pretty:
     theme: leonids
@@ -11,6 +11,8 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
 
 ## Como as mudanças climáticas afetam as mulheres no mundo?
 >Climate change has a greater impact on those sections of the population, in all countries, **that are most reliant on natural resources for their livelihoods and/or who have the least capacity to respond to natural hazards**, such as droughts, landslides, floods and hurricanes. Women commonly face higher risks and greater burdens from the **impacts of climate change in situations of poverty, and the majority of the world’s poor are women**. Women’s **unequal participation in decision-making processes and labour markets** compound inequalities and often prevent women from fully contributing to climate-related planning, policy-making and implementation.
