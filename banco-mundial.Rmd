@@ -1,0 +1,85 @@
+---
+title: "Como as mudanças climáticas afetam as mulheres no mundo?"
+author: "Beatriz Milz e Jean Prado"
+date: "março de 2020"
+output:
+  prettydoc::html_pretty:
+    theme: leonids
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+## Como as mudanças climáticas afetam as mulheres no mundo?
+>Climate change has a greater impact on those sections of the population, in all countries, **that are most reliant on natural resources for their livelihoods and/or who have the least capacity to respond to natural hazards**, such as droughts, landslides, floods and hurricanes. Women commonly face higher risks and greater burdens from the **impacts of climate change in situations of poverty, and the majority of the world’s poor are women**. Women’s **unequal participation in decision-making processes and labour markets** compound inequalities and often prevent women from fully contributing to climate-related planning, policy-making and implementation.
+
+Fonte: *[Gender and Climate Change - ONU](https://unfccc.int/gender)*
+
+## Olhando para os dados do Banco Mundial
+Uma das formas de testar essas hipóteses é olhar para os dados do Banco Mundial. Vamos fazer isso com o pacote `wbstats` que puxa automaticamente os dados da API da organização.
+
+### Carregando os pacotes
+```{r}
+library(wbstats)
+library(tidyverse)
+```
+
+### Visualizando os indicadores
+```{r}
+wb_indicators <- wb_cachelist[["indicators"]]
+
+glimpse(wb_indicators)
+```
+
+## Perguntas interessantes
+- Quais países são os mais afetados pelo clima? por quê?
+- As mulheres desses países vão ser mais afetadas que os homens? Por quê?
+- Analise os indicadores abaixo e, se necessário, procure mais, para justificar sua hipótese
+
+## Indicadores interessantes
+
+### Países com mais recursos naturais em % no PIB
+```{r}
+recursos_naturais <- wb(indicator='NY.GDP.TOTL.RT.ZS', startdate=2017, enddate=2017)
+```
+
+>`r wb_indicators[which(wb_indicators$indicatorID == "NY.GDP.TOTL.RT.ZS"),4]`
+
+
+### População que vive em áreas com baixa elevação da terra
+```{r}
+elevacao_terra <- wb(indicator='EN.POP.EL5M.ZS', startdate=2010, enddate=2010)
+```
+
+>`r wb_indicators[which(wb_indicators$indicatorID == "EN.POP.EL5M.ZS"),4]`
+
+### Trabalha em áreas relacionadas à agricultura (% por gênero)
+```{r}
+em_agri_mulheres <- wb(indicator='SL.AGR.EMPL.FE.ZS', startdate=2019, enddate=2019)
+em_agri_homens <- wb(indicator='SL.AGR.EMPL.MA.ZS', startdate=2019, enddate=2019)
+```
+
+>`r wb_indicators[which(wb_indicators$indicatorID == "SL.AGR.EMPL.FE.ZS"),4]`
+
+### Dificuldade das mulheres no acesso à saúde
+```{r}
+acesso_saude <- wb(indicator='SH.ACS.PROB.Q5.ZS', startdate=2012, enddate=2012)
+```
+
+>`r wb_indicators[which(wb_indicators$indicatorID == "SH.ACS.PROB.Q5.ZS"),4]`
+
+### Mulheres sem acesso à terra
+```{r}
+acesso_terra <- wb(indicator='SG.OWN.LDNO.FE.ZS', startdate=2012, enddate=2012)
+```
+
+>`r wb_indicators[which(wb_indicators$indicatorID == "SG.OWN.LDNO.FE.ZS"),4]`
+
+### Mulheres em assentos do parlamento (%)
+```{r}
+assento_parlamento <- wb(indicator='SG.GEN.PARL.ZS', startdate=2017, enddate=2017)
+```
+
+>`r wb_indicators[which(wb_indicators$indicatorID == "SG.GEN.PARL.ZS"),4]`
