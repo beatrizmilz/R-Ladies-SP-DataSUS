@@ -1,7 +1,7 @@
 ---
 title: "Obtendo os dados de mortalidade no DataSUS"
 author: "Beatriz Milz e Jean Prado"
-date: "Março - 2020 <p><center> <a class='github-button' href='https://github.com/beatrizmilz/R-Ladies-SP-DataSUS' data-color-scheme='no-preference: light; light: light; dark: dark;' data-size='large' data-show-count='true' aria-label='Star beatrizmilz/R-Ladies-SP-DataSUS on GitHub'>Acesse este repositório</a>  </center></p>"
+date: "Março de 2020  <p><center> <img src='https://raw.githubusercontent.com/rladies/starter-kit/master/stickers/rainbow.png'  width='50%' height='30%'> <br> <a class='github-button' href='https://github.com/beatrizmilz/R-Ladies-SP-DataSUS' data-color-scheme='no-preference: light; light: light; dark: dark;' data-size='large' data-show-count='true' aria-label='Star beatrizmilz/R-Ladies-SP-DataSUS on GitHub'>Acesse este repositório</a>  </center></p>"
 output:
   prettydoc::html_pretty:
     theme: leonids
